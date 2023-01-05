@@ -94,7 +94,12 @@ function CreateListing() {
             const apiKey = process.env.REACT_APP_GEOCODE_API_KEY;
 
             const url = `https://api.positionstack.com/v1/forward?access_key=${apiKey}&query=${address}`;
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                mode: 'cors',
+                headers: {
+                    'Access-Control-Allow-Origin':'*'
+                  }
+            });
 
             const data = await response.json();
 
