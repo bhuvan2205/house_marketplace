@@ -93,7 +93,7 @@ function CreateListing() {
         if (geolocationEnabled) {
             const apiKey = process.env.REACT_APP_GEOCODE_API_KEY;
 
-            const url = `http://api.positionstack.com/v1/forward?access_key=${apiKey}&query=${address}`;
+            const url = `https://api.geoapify.com/v1/geocode/search?text=${address}&apiKey=${apiKey}`;
             const response = await fetch(url, {
                 mode: 'cors',
                 headers: {
@@ -101,14 +101,18 @@ function CreateListing() {
                   }
             });
 
-            const data = await response.json();
+            const data = await response.json();            
 
-            geolocation.lat = data.data[0]?.latitude ?? 0;
-            geolocation.lng = data.data[0]?.longitude ?? 0;
+            geolocation.lat = data.features[0]?.properties.lat;
+            geolocation.lng = data.features[0]?.properties.lon;
 
-            location = data.data[0]?.label;
+            console.log(geolocation.lat);
+            console.log(geolocation.lng);
 
-            if (location === undefined || location.includes('undefined')) {
+            // eslint-disable-next-line no-unused-vars
+            location = data.query.text;
+
+            if (data.features[0] === undefined || data.features[0] === null) {
                 setLoading(false);
                 toast.error('Please enter a correct address');
                 return;
